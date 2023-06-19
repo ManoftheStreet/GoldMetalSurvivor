@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     public float speed;
-    Vector2 inputVec;
+    public Vector2 inputVec;
     Rigidbody2D rigid;
     SpriteRenderer spriter;
     Animator anim;
