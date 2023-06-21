@@ -15,11 +15,7 @@ public class Weapon : MonoBehaviour
 
     private void Awake()
     {
-        player = GetComponentInParent<Player>();//부모컴포넌트 가져오기
-    }
-    private void Start()
-    {
-        Init();
+        player = GameManager.instance.player;//부모컴포넌트 가져오기
     }
 
     void Update()
@@ -30,7 +26,7 @@ public class Weapon : MonoBehaviour
                 transform.Rotate(Vector3.back * speed * Time.deltaTime);
                 break;
 
-            default:
+            case 1:
                 timer += Time.deltaTime;
 
                 if(timer > speed)
@@ -41,22 +37,43 @@ public class Weapon : MonoBehaviour
                 break;
         }
         //test
-        if(Input.GetMouseButtonDown(0))
+        /*if(Input.GetMouseButtonDown(0))
         {
             LevelUp(10, 1);
-        }
+        }*/
     }
 
-    public void LevelUp(float damage, int count)
+    public void LevelUp(float damage, int count) //weapon의 레벨업
     {
         this.damage += damage;
         this.count += count;
 
         if (id == 0)
             Batch();
+
+        player.BroadcastMessage("ApplyGear",SendMessageOptions.DontRequireReceiver);
     }
-    public void Init()//초기화
+    public void Init(ItemData data)//초기화
     {
+        //Basic Set
+        name = "Weapon " + data.itemId;
+        transform.parent = player.transform;
+        transform.localPosition = Vector3.zero;
+
+        //Property set
+        id = data.itemId;
+        damage = data.baseDamage;
+        count = data.baseCount;
+
+        for(int index = 0;index < GameManager.instance.pool.prefabs.Length; index++)
+        {
+            if(data.projectile == GameManager.instance.pool.prefabs[index])
+            {
+                prefabId = index;
+                break;
+            }
+        }
+
         switch (id)
         {
             case 0:
@@ -65,9 +82,16 @@ public class Weapon : MonoBehaviour
                 break;
 
             default:
-                speed = 0.3f;
+                speed = 0.4f;
                 break;
         }
+
+        //Hand set
+        Hand hand = player.hands[(int)data.itemType];//근접거리 Id 0 원거리 Id 1
+        hand.spriter.sprite = data.hand;
+        hand.gameObject.SetActive(true);
+
+        player.BroadcastMessage("ApplyGear", SendMessageOptions.DontRequireReceiver);
     }
 
     void Batch()
