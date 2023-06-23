@@ -9,8 +9,8 @@ public class Hand : MonoBehaviour
 
     SpriteRenderer player;
 
-    Vector3 rightPos = new Vector3(0.33f, -0.16f, 0f);
-    Vector3 rightPosReverse = new Vector3(-0.15f, -0.16f, 0f);
+    Vector3 rightPos = new Vector3(0.35f, -0.15f, 0f);
+    Vector3 rightPosReverse = new Vector3(-0.15f, -0.15f, 0f);
     Quaternion leftRot = Quaternion.Euler(0,0,-35);
     Quaternion leftRotReverse = Quaternion.Euler(0,0,-135);
     private void Awake()
@@ -27,6 +27,17 @@ public class Hand : MonoBehaviour
             spriter.flipY = isReverse;
             spriter.sortingOrder = isReverse ? 4 : 6;
         }
+        /*else if (GameManager.instance.player.scaner.nearestTarget)
+        {
+            Vector3 targetPos = GameManager.instance.player.scaner.nearestTarget.position;
+            Vector3 dir = targetPos - transform.position;
+            transform.localRotation = Quaternion.FromToRotation(Vector3.right, dir);
+
+            bool isRotA = transform.localRotation.eulerAngles.z > 90 && transform.localRotation.eulerAngles.z < 270;
+            bool isRotB = transform.localRotation.eulerAngles.z < -90 && transform.localRotation.eulerAngles.z > -270;
+            spriter.flipY = isRotA || isRotB;
+            spriter.sortingOrder = 6;
+        }*/
         else
         {
             transform.localPosition= isReverse ? rightPosReverse : rightPos;
